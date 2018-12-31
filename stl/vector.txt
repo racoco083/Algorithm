@@ -1,0 +1,29 @@
+template <class T>
+class vector {
+public:
+	int sz, ca;
+	T* arr;
+	vector<T>() {
+		sz = 0;
+		ca = 32;
+		arr = new T[ca];
+	}
+	~vector<T>() { delete[] arr; }
+	void push_back(T a) {
+		if (sz == ca) {
+			ca += ca;
+			T* tmp = new T[ca];
+			for (int i = 0; i < sz; i++) tmp[i] = arr[i];
+			delete[] arr;
+			arr = tmp;
+		}
+		arr[sz++] = a;
+	}
+	void pop_back() { if (sz > 0) sz--; }
+	int size() { return sz; }
+	bool empty() { return sz == 0; }
+	void clear() { sz = 0; }
+	T* begin() { return &arr[0]; }
+	T* end() { return &arr[0] + sz; }
+	T &operator[](int idx) { return arr[idx]; }
+};

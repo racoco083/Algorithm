@@ -1,0 +1,75 @@
+#include <iostream>
+using namespace std;
+
+typedef long long ll;
+
+int N;
+int t[101];
+int segS;
+
+void build() { //단말의 부모부터 시작한다.
+	for (int i = segS - 1; i >= 1; i--)
+		t[i] = t[i * 2] + t[i * 2 + 1];
+	//t[i] = t[i << 1] + t[i << 1 | 1];
+}
+
+void update(int i, int v) {
+	i += (segS - 1);
+	t[i] = v;
+	while (i > 1) {
+		i /= 2;
+		t[i] = t[i * 2] + t[i * 2 + 1];
+	}
+}
+
+// 감탄 밖에 안나온다!!
+ll sum(int l, int r) {
+	ll ans = 0;
+	for (l += (segS-1), r += (segS-1); l < r; l >>= 1, r >>= 1) {
+		if (l & 1)
+			ans += t[l++];
+		if (r & 1)
+			ans += t[--r]; //--로 감소시키도 그 값을 더했다.
+	}
+	return ans;
+}
+
+//root의 인덱스가 1이다.
+int main() {
+	cin >> N;
+	segS = 1;
+	while (segS < N) segS *= 2;
+
+	for (int i = 0; i < N; i++)
+		cin >> t[segS + i];
+	
+	build();
+
+	for (int i = 1; i < 2 * segS; i++) {
+		cout << t[i] << ' ';
+	}
+	cout << '\n';
+	// 밑의 예제 참조
+	cout << sum(1, 5) << '\n';// 답은 10으로 인덱스는 1, 2, 3, 4 인덱스의 값을 더해준다.
+	update(1, 5);
+	cout << sum(1, 5) << '\n';// 인덱스 1인 값 1를 5로 바꾸어 값이 14가 되었다. 
+	update(7, 1);
+	cout << sum(5, 8) << '\n';// 인덱스 7인 값7을 1로 바꾸어 값이 12가 되었다. 
+
+	return 0;
+}
+// 빈 공간은 또 0으로 채워져야 하는데 t는 전역이니 자동으로 빈 공간은 0이다.
+
+/*
+8
+1 2 3 4 5 6 7 8
+
+7
+1 2 3 4 5 6 7
+*/
+
+/*
+[, ] : 폐구간
+(, ) : 개구간
+[1,8)는1<=x<8 이라는 말이다.
+*/

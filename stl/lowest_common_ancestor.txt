@@ -1,0 +1,104 @@
+입력한 두 정점의 공통 조상 정점의 번호를 logN에 구한다.
+
+#define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
+#include <iostream>
+#define MAX_N 50000
+using namespace std;
+
+template <class T>
+class vector {
+public:
+	int sz, ca;
+	T* arr;
+	vector<T>() {
+		sz = 0;
+		ca = 32;
+		arr = new T[ca];
+	}
+	~vector<T>() { delete[] arr; } 
+	// 함수 안에서 vector를 사용했다고 하면 함수가 끝나면 자동으로 이 소멸자를 호출해서 vector가 사용한 자원을 free한다.
+	// vector를 전역으로 사용했으면 딱히 안 써도 된다.
+	void push_back(T a) {
+		if (sz == ca) {
+			ca += ca;
+			T* tmp = new T[ca];
+			for (int i = 0; i < sz; i++) tmp[i] = arr[i];
+			delete[] arr;
+			arr = tmp;
+		}
+		arr[sz++] = a;
+	}
+	void pop_back() { if (sz > 0) sz--; }
+	int size() { return sz; }
+	bool empty() { return sz == 0; }
+	void clear() { sz = 0; }
+	T* begin() { return &arr[0]; }
+	T* end() { return &arr[0] + sz; }
+	T &operator[](int idx) { return arr[idx]; }
+};
+
+int N, M, par[MAX_N + 1][21], visited[MAX_N + 1], d[MAX_N + 1];
+vector<int> adj[MAX_N + 1];
+
+void dfs(int here, int depth) {
+	visited[here] = true;
+	d[here] = depth;
+	for (int i = 0; i < adj[here].size(); i++) {
+		int there = adj[here][i];
+		if (visited[there]) continue;
+		par[there][0] = here;
+		dfs(there, depth + 1);
+	}
+}
+
+void f() {
+	for (int j = 1; j < 21; j++) {
+		for (int i = 1; i <= N; i++) {
+			par[i][j] = par[par[i][j - 1]][j - 1];
+		}
+	}
+}
+
+void swap(int &a, int &b) {
+	int tmp = a;
+	a = b;
+	b = tmp;
+}
+
+int lca(int u, int v) {
+	if (d[u] > d[v])
+		swap(u, v);
+	for (int i = 20; i >= 0; i--) {
+		if (d[v] - d[u] >= (1 << i))
+			v = par[v][i];
+	}
+	if (u == v) return u;
+	for (int i = 20; i >= 0; i--) {
+		if (par[u][i] != par[v][i]) {
+			u = par[u][i];
+			v = par[v][i];
+		}
+	}
+	return par[u][0];
+}
+
+int main() {
+	fastio();
+	int u, v;
+	cin >> N;
+	for (int i = 0; i < N - 1; i++) {
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+	dfs(1, 0);
+	f();
+	cin >> M;
+	while (M--) {
+		cin >> u >> v;
+		cout << lca(u, v) << '\n';
+	}
+	return 0;
+}
+
+// https://www.acmicpc.net/problem/11438

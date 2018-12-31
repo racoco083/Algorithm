@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+#define TRSZ 26
+#define OFFSET 'a'
+using namespace std;
+
+struct Node {
+	Node* c[TRSZ];
+	bool e;
+};
+
+int N;
+
+int slen(const char* a) {
+	int len = 0;
+	while (*a != 0) a++, len++;
+	return len;
+}
+
+Node* create_node() {
+	Node* p = new Node();
+	for (int i = 0; i < TRSZ; i++)
+		p->c[i] = 0;
+	p->e = false;
+	return p;
+}
+
+void insert(Node* root, char* v) {
+	int len = slen(v);
+	Node* p = root;
+	for (int i = 0; i<len; i++) {
+		int idx = v[i] - OFFSET;
+		if (!p->c[idx]) // 없으면
+			p->c[idx] = create_node();
+		p = p->c[idx];
+	}
+	p->e = true;
+}
+
+bool search(Node* root, char* v) {
+	int len = slen(v);
+	Node* p = root;
+	for (int i = 0; i<len; i++) {
+		int idx = v[i] - OFFSET;
+		if (!p->c[idx])
+			return false;
+		p = p->c[idx];
+	}
+	return p->e;
+}
+
+int main() {
+	cin >> N;
+	char str[10];
+	char arr[8][10] = { "he", "she", "her", "him", "show", "they", "them", "sh" };
+	
+	Node* root = create_node();
+	for (int i = 0; i < N; i++) {
+		cin >> str;
+		insert(root, str);
+	}
+
+	for (int i = 0; i < 8; i++) {
+		cout << search(root, arr[i]) << '\n';
+	}
+	return 0;
+}
+/*
+5
+he she her him show
+*/
+
+// 특정 문자열을 삽입했는지 안 했는지 체크하는데 O(문자열 길이) 만에 가능하게 한다.
+// cin >> str; 자동으로 맨 마지막 자리에 0을 넣어준다.
+
+void destruct(Node* root) {// 거의 쓸 일이 없어보인다.
+	Node* p = root;
+	for (int i = 0; i<TRSZ; i++)
+		if (p->c[i])
+			destruct(p->c[i]);
+	delete p;
+}
