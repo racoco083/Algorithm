@@ -14,7 +14,7 @@ void scpy(char* d, const char* s) {
 	*d = *s;
 }
 
-int slen(char* a) {
+int slen(const char* a) {
 	int len = 0;
 	while (*a != 0) a++, len++;
 	return len;
@@ -33,24 +33,20 @@ int scmp(char* a, char* b) {
 }
 
 void merge(int s, int e) {
-	if (s < e) {
-		int m = (s + e) / 2;
-		int l = s, r = m + 1, f = s;
-		// 분리
-		merge(l, m);
-		merge(r, e);
-		// 정렬
-		while (l <= m && r <= e) {
-			if (scmp(arr[l], arr[r]) < 0) scpy(tmp[f++], arr[l++]);
-			else scpy(tmp[f++], arr[r++]);
-		}
-		// 합병
-		while (l <= m) scpy(tmp[f++], arr[l++]);
-		while (r <= e) scpy(tmp[f++], arr[r++]);
-		for (int i = s; i <= e; i++) {
-			scpy(arr[i], tmp[i]);
-		}
+	if ((e - s) < 1) return;
+	int m = (s + e) / 2;
+	int l = s, r = m + 1, k = s;
+	// 분리
+	merge(l, m);
+	merge(r, e);
+	// 정렬
+	while (l <= m && r <= e) {
+		(scmp(arr[l], arr[r]) < 0) ? scpy(tmp[k++], arr[l++]) : scpy(tmp[k++], arr[r++]);
 	}
+	while (l <= m) scpy(tmp[k++], arr[l++]);
+	while (r <= e) scpy(tmp[k++], arr[r++]);
+	// 합병
+	for (int i = s; i <= e; i++) scpy(arr[i], tmp[i]);
 }
 
 int main() {
