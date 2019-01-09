@@ -1,39 +1,49 @@
 #define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
 #include <iostream>
+#include <string.h>
 using namespace std;
 
-int arr[21];
-int N, B;
-int ans;
+int N;
+double area[17][17];
+double cache[1 << 16];
 
-int min(int a, int b) {
-	return a > b ? b : a;
+double max(double a, double b) {
+	return a > b ? a : b;
 }
 
-// arr[d]번째 값을 넣어서 다음 dfs로 넣지 않고 다음 dfs로 가는 것을 반복해서
-// 높이의 합 값 s가 B보다 크거나 같으면 ans의 값과 비교해 더 작은 값을 ans에 갱신
-void dfs(int s, int d) { // sum, depth
-	if (s >= B) {
-		ans = min(ans, s);
-		return;
-	}
-	if (d >= N) return;
+// d번째 직원이 i번째 일을 선택한다. ret로 자식 노드에서 값을 받을 때는 최대값만 받으니 
+// 가장 큰 값을 ret에 갱신시킨다.
+double dfs(int d, int m) {// ret, depth, mask
+	if (d >= N) return 1.0;
 
-	dfs(s + arr[d], d + 1);
-	dfs(s, d + 1);
+	double &ret = cache[m];
+	if (ret != 0.0) return ret;
+
+	for (int i = 0; i < N; i++) {
+		if (m & (1 << i)) continue;
+		ret = max(ret, dfs(d + 1, m | (1 << i)) * area[d][i]);
+	}
+	return ret;
 }
 
 int main() {
+	fastio();
+	cout << fixed;
+	cout.precision(6);
 	int TC;
 	cin >> TC;
 	for (int T = 1; T <= TC; T++) {
-		ans = 2e9;
-		cin >> N >> B;
+		cin >> N;
+		double a;
+		// double은 memset에서 -1로 초기화 되지 않는다.
+		memset(cache, 0, sizeof(cache));
 		for (int i = 0; i < N; i++) {
-			cin >> arr[i];
+			for (int j = 0; j < N; j++) {
+				cin >> a;
+				area[i][j] = a / 100.0;
+			}
 		}
-		dfs(0, 0);
-		cout << '#' << T << ' ' << ans - B << '\n';
+		cout << '#' << T << ' ' << dfs(0, 0) * 100.0 << '\n';
 	}
 	return 0;
 }

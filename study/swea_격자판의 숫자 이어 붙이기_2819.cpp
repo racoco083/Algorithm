@@ -1,49 +1,50 @@
 #define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
 #include <iostream>
-#include <string.h>
+#include <string>
+#include <set>
 using namespace std;
 
-int N;
-double area[17][17];
-double cache[1 << 16];
+char area[4][4];
+set<string> ss;
+int dy[4] = { -1, 0, 1, 0 };
+int dx[4] = { 0, 1, 0, -1 };
 
-double max(double a, double b) {
-	return a > b ? a : b;
-}
-
-// d번째 직원이 i번째 일을 선택한다. ret로 자식 노드에서 값을 받을 때는 최대값만 받으니 
-// 가장 큰 값을 ret에 갱신시킨다.
-double dfs(int d, int m) {// ret, depth, mask
-	if (d >= N) return 1.0;
-
-	double &ret = cache[m];
-	if (ret != 0.0) return ret;
-
-	for (int i = 0; i < N; i++) {
-		if (m & (1 << i)) continue;
-		ret = max(ret, dfs(d + 1, m | (1 << i)) * area[d][i]);
+// string을 사용하여 다음 값의 숫자를 붙여준다.
+// dfs로 depth가 7보다 클때까지 깊이 탐색을 하며 
+// 7보다 크면 s값을 set에 집어 넣는다. 
+// set의 size가 곧 답이다.
+void dfs(int y, int x, int d, string s) {// depth, set
+	if (d >= 7) {
+		ss.insert(s);
+		return;
 	}
-	return ret;
+
+	for (int i = 0; i < 4; i++) {
+		int ny = y + dy[i];
+		int nx = x + dx[i];
+		if (ny < 0 || ny >= 4 || nx < 0 || nx >= 4) continue;
+		dfs(ny, nx, d + 1, s + area[ny][nx]);
+	}
 }
 
 int main() {
 	fastio();
-	cout << fixed;
-	cout.precision(6);
 	int TC;
 	cin >> TC;
 	for (int T = 1; T <= TC; T++) {
-		cin >> N;
-		double a;
-		// double은 memset에서 -1로 초기화 되지 않는다.
-		memset(cache, 0, sizeof(cache));
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				cin >> a;
-				area[i][j] = a / 100.0;
+		ss.clear();
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				cin >> area[i][j];
 			}
 		}
-		cout << '#' << T << ' ' << dfs(0, 0) * 100.0 << '\n';
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				dfs(i, j, 0, "");
+			}
+		}
+		cout << '#' << T << ' ' << ss.size() << '\n';
 	}
 	return 0;
 }
