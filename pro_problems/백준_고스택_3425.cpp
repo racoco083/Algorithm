@@ -1,5 +1,3 @@
-https://www.acmicpc.net/problem/3425
-
 // 곱하기가 있으니 int범위를 넘을 수 있다는 것을 망각하여 2번 틀렸다!!
 
 #define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
@@ -29,7 +27,7 @@ public:
 		instruc[i] = 0;
 	}
 	Ins() {}
-};	
+};
 
 int N;
 Ins ins[MAX_INS];

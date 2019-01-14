@@ -33,7 +33,7 @@ public:
 	T &operator[](int idx) { return arr[idx]; }
 };
 
-class Vi{
+class Vi {
 public:
 	int v, i;
 	Vi(int _v, int _i) : v(_v), i(_i) {}
@@ -41,7 +41,7 @@ public:
 };
 
 Vi vi[MAX + 1], t_vi[MAX + 1]; // value_index
-int base[MAX + 1], sv[MAX + 1], t_sv[MAX+1], diff[MAX + 1], tri[MAX + 1]; // search_value, tri는 3진수
+int base[MAX + 1], sv[MAX + 1], t_sv[MAX + 1], diff[MAX + 1], tri[MAX + 1]; // search_value, tri는 3진수
 vector<int> mp[MAX + 1]; // map을 해시처럼 사용하기 위한 자료구조
 
 int min(int a, int b) {
@@ -86,7 +86,7 @@ void merge_sv(int s, int e) {
 
 int lb(int s, int e, int v) {
 	//lower_bound로 해야한다 같은 값이 여러개 존재할 수 있고 그 중에서 제일 인덱스가 작은 값만 계속 리턴해주어야 하기 때문이다.
-	while(s<e){
+	while (s<e) {
 		int m = (e + s) / 2;
 		if (sv[m] < v) s = m + 1;
 		else e = m;
@@ -118,10 +118,10 @@ void flip(int mat[4][4]) {
 
 void rotate(int mat[4][4]) {
 	int tmp[4][4];
-	for (int i = 0; i < 4; i++) 
-		for (int j = 0; j < 4; j++) 
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
 			tmp[j][3 - i] = mat[i][j];
-		
+
 	for (int i = 0; i < 4; i++)
 		for (int j = 0; j < 4; j++)
 			mat[i][j] = tmp[i][j];
@@ -169,10 +169,10 @@ int makeBlock(int module[][4][4]) {
 		visited[idx] = true;
 		mp[get_idx(tri[idx])].pop_back();
 		int t_mat[4][4];
-		for (int i = 0; i < 4; i++) 
-			for (int j = 0; j < 4; j++) 
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++)
 				t_mat[i][j] = module[idx][i][j];
-			
+
 		flip(t_mat);
 		int maxV = -1;
 		int maxI = -1;
@@ -189,7 +189,7 @@ int makeBlock(int module[][4][4]) {
 			int c_idx = get_idx(c_tri);
 			if ((c_idx == -1) || mp[c_idx].empty() /*|| visited[c_idx]*/) continue;
 			int it = mp[c_idx].back();
-			
+
 			if (maxV < vi[it].v) {
 				maxV = vi[it].v;
 				maxI = it;
@@ -198,7 +198,7 @@ int makeBlock(int module[][4][4]) {
 		}
 		if (maxV != -1) {
 			// 한쪽 블럭이 올라온 만큼만 다른쪽 블럭이 올라오므로 diff[idx]를 한 번만 더해주면 된다.
-			ans += base[idx] + base[maxI] + diff[idx]; 
+			ans += base[idx] + base[maxI] + diff[idx];
 			visited[maxI] = true;
 			mp[maxM].pop_back();
 		}
