@@ -19,6 +19,7 @@ public:
 		}
 		arr[sz++] = a;
 	}
+	// 클래스 안 함수 {}해주어야 한다!!
 	void pop_back() { if (sz > 0) sz--; }
 	int size() { return sz; }
 	bool empty() { return sz == 0; }
@@ -27,3 +28,10 @@ public:
 	T* end() { return &arr[0] + sz; }
 	T &operator[](int idx) { return arr[idx]; }
 };
+
+int main() {
+	vector<int> vec;
+	for (int i = 20; i >= 1; i--) vec.push_back(i);
+	for (int i = 0; i < vec.size(); i++) cout << vec[i] << ' ';
+	return 0;
+}

@@ -41,7 +41,7 @@ void merge(int s, int e) {
 	merge(r, e);
 	// 정렬
 	while (l <= m && r <= e) {
-		(scmp(arr[l], arr[r]) < 0) ? scpy(tmp[k++], arr[l++]) : scpy(tmp[k++], arr[r++]);
+		(scmp(arr[l], arr[r]) <= 0) ? scpy(tmp[k++], arr[l++]) : scpy(tmp[k++], arr[r++]);//안정성이 있으려면 <이 아닌 <=해주어야 한다.
 	}
 	while (l <= m) scpy(tmp[k++], arr[l++]);
 	while (r <= e) scpy(tmp[k++], arr[r++]);

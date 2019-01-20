@@ -1,0 +1,51 @@
+#define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
+#include <iostream>
+#include <string.h>
+using namespace std;
+#define MAX 100000
+
+int arr[MAX];
+int nv[MAX];// need_value
+int N;
+
+int lb(int s, int e, int v) {
+	while (s < e) {
+		int m = (e + s) / 2;
+		if (nv[m] >= v) e = m;
+		else s = m + 1;
+	}
+	return e;
+}
+
+int main() {
+	fastio();
+	int TC;
+	cin >> TC;
+	for (int T = 1; T <= TC; T++) {
+		memset(nv, 0, sizeof(nv));
+		cin >> N;
+		int maxL = 0;
+		for (int i = 0; i < N; i++) {
+			cin >> arr[i];
+		}
+		nv[0] = arr[0];
+		for (int i = 1; i < N; i++) {
+			if (nv[maxL] < arr[i]) {
+				maxL++;
+				nv[maxL] = arr[i];
+				continue;
+			}
+			int pos = lb(0, maxL, arr[i]);
+			nv[pos] = arr[i];
+		}
+		cout << '#' << T << ' ' << (maxL+1) << '\n';
+	}
+}
+
+// maxL의 길이가 곧 lis의 값이 되는 것이다.
+// arr[i]이 nv에 있는 값들 보다 크다면 nv길이를 늘리고 늘린 곳에
+// arr[i]를 넣어주고 
+// 아니면 대체될 수 있는 값이 있다는 뜻으로 nv의 특정 값과 대체된다.
+// 값들을 순서대로 보다가 nv[i-1], nv[i]사이에 arr[i]가 들어가야하면
+// 더 큰 값인 nv[i]값을 arr[i]값으로 대체한다.
+// 대체한다.

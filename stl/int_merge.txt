@@ -12,7 +12,7 @@ void merge(int s, int e) {
 	merge(l, m);
 	merge(r, e);
 	while (l <= m && r <= e) {
-		tmp[k++] = (arr[l] < arr[r]) ? arr[l++] : arr[r++];
+		tmp[k++] = (arr[l] <= arr[r]) ? arr[l++] : arr[r++];// 안정성이 있으려면 <가 아닌 <=가 있어야 한다.
 	}
 	while (l <= m) tmp[k++] = arr[l++];
 	while (r <= e) tmp[k++] = arr[r++];

@@ -1,0 +1,51 @@
+문자열 검색 알고리즘의 구현
+vector<int> getPartialMatch(const string& N) {//부분 일치 테이블 생성하기
+	int m = N.size();
+	vector<int> pi(m, 0);
+	int matched = 0;
+	int begin = 1;
+	while (matched + begin < m) {
+		if (N[begin + matched] == N[matched]) {
+			matched++;
+			pi[begin + matched - 1] = matched;//인덱스에 -1 안 넣는 실수를 많이 하네
+		}
+		else {
+			if (matched == 0)
+				begin++;
+			else {
+				begin += matched - pi[matched - 1];//begin을 접두사의 처음과 맞추기 위해
+				matched = pi[matched - 1];//N[begin + matched] 와 N[matched]의 다른 부분부터 비교하기 위해
+			}
+		}
+	}
+	return pi;
+}//인덱스 마다 pi에 접두사와 접미사가 같은 길이를 담는다.
+
+
+vector<int> kmpSearch(const string& H, const string& N) {//문자열 검색 알고리즘의 구현
+	int n = H.size(), m = N.size();
+	vector<int> ret;
+
+	vector<int> pi = getPartialMatch(N);
+	int begin = 0, matched = 0;
+	while (begin <= n - m) {//H의 시작위치는 최소 H의 길이 n에서 m을 뺸 나머지 보다는 같거나 작아야한다.
+		if (matched < m&& H[begin + matched] == N[matched]) {
+			matched++;//H[begin + matched]이거를 접미사라고 생각하면 위의 코드와 똑같다.
+			if (matched == m) ret.push_back(begin);//부분 문자열 포함할 때 H의 시작위치를 담는다.
+		}
+		else {
+			if (matched == 0)
+				begin++;
+			else {
+				begin += matched - pi[matched - 1];
+				matched = pi[matched - 1];
+			}
+		}
+	}
+	return ret;
+}
+void main() {
+	vector<int> ret;
+	ret = kmpSearch("avavadergavafdsfsavasdf", "ava");
+	cout << ret.size();
+}
