@@ -1,0 +1,71 @@
+https://codeforces.com/problemset/problem/1102/E
+
+#define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
+#include<iostream>
+#include <map>
+using namespace std;
+
+#define MAX 200005
+#define MOD 998244353
+
+int N, a[MAX];
+
+int max(int a, int b) {
+	return a > b ? a : b;
+}
+
+int main() {
+	fastio();
+	cin >> N;
+	map<int, int>mp;
+	for (int i = 0; i<N; ++i) {
+		cin >> a[i];
+		mp[a[i]] = i;
+	}
+	int sol = 1, mx = 0;
+	// 0 1 2 3 4 5 (index)
+	// 1 2 1 2 3 3 (value)
+	// 위와 같은 입력 값이 있으면 인덱스 3까지는 문제 설명의 
+	// 배열 b에 대해서 b1은 0이어야 한다. b[0] == 0
+	// 다음 값은 같거나 1커야 한다. 근데 1끼리는 같은 값을 가져야 하므로
+	// 2번째 인덱스의 1도 0이 된다. 그 앞의 2는 무조건 0이 되어야 한다.
+	// 그래서 a를 0부터 방문하면서 a[i]의 값이 가지는 최대 인덱스가
+	// mx보다 크면 mx에 갱신시켜준다. 그래서 i가 이 mx보다 크면 현재 b[i]값은
+	// b[i-1]과 같거나 1더클 수 있다는 뜻으로 sol*2를 해 준다.
+	// mx보다 작거나 같다면 mx의 값과 같은 i가 나올 때까지는 b[i-1] == b[i]라는
+	// 뜻이다.
+	for (int i = 0; i<N; ++i) {
+		if (i>mx)sol = sol * 2 % MOD;
+		if(mp.count(a[i])) mx = max(mx, mp[a[i]]);
+	}
+	cout << sol << '\n';
+}
+///////////////////////////틀린 코드///////////////////////////////
+#define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
+#include<iostream>
+using namespace std;
+
+const int MXN = 200005;
+const int MOD = 998244353;
+
+int N, a[MXN], chk[MXN];
+
+int max(int a, int b) {
+	return a > b ? a : b;
+}
+
+int main() {
+	fastio();
+	cin >> N;
+	// value의 값이 1e9라 안 된다. 그래서 a값이 충분히 작았으면 될 수있었을 것이다.
+	for (int i = 0; i<N; ++i) {
+		cin >> a[i];
+		chk[a[i]] = i;
+	}
+	int sol = 1, mx = 0;
+	for (int i = 0; i<N; ++i) {
+		if (i>mx)sol = sol * 2 % MOD;
+		mx = max(mx, chk[a[i]]);
+	}
+	cout << sol << '\n';
+}
