@@ -1,0 +1,53 @@
+https://codeforces.com/contest/1102/problem/D
+
+// 이 문제는 0,1,2의 개수를 똑같이 하면서 숫자를 바꾸어 가장 작은 값을 만드는
+// 문제이다.
+
+#define fastio() ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0)
+#include <iostream>
+using namespace std;
+#define MAX 300001
+
+char s[MAX];
+int frq[3];
+int N;
+
+int main() {
+	fastio();
+	cin >> N >> s;
+	for (int i = 0; i < N; i++) frq[s[i] - '0']++;
+	
+	int b = N / 3;// ballence_count
+
+	// s를 앞 부터 돌면서 b개수에 맞게 큰 값을 작게 만들 수 있으면 만든다.
+	for (int i = 0; i < N; i++) {// 감소시켜 주어야 할 것
+		if (frq[s[i]-'0'] <= b) continue;// 감소시켜 주어야 하는데 b개수 보다 적거나 같으면 안 된다.
+		for (int j = '0'; j < '2'; j++) {// 증가시켜 주어야 할 것
+			if (s[i] == j) break;
+			if (frq[j - '0'] >= b) continue;// 증가시켜 주어야 하는데 b개수보다 크거나 같으면 안 된다.
+			frq[s[i]-'0']--;
+			frq[j - '0']++;
+			s[i] = j;
+			break;// 값 갱신해주면 다음 s[i]값을로 이동하기 위해 break;
+		}
+	}
+	// s를 뒤에서 부터 돌면서 b개수에 맞게 작은 값이 b개수보다 많고 큰 값을 b개수보다 
+	// 적을 때를 처리하기 위한 것으로 가장 큰 값이 가장 뒤에 들어가고 그 다음 큰 값이 
+	// 그것보다 앞에 들어간다. 6 000000로 예로 들면 뒤에서 부터 넣어야
+	// 5번째 6번째 인덱스에 2가 들어가고 3,4번째 인덱스에 1이 들어간다.
+	// 그렇게 하기 위해 j를 '2'부터 시작한다.
+
+	for (int i = N - 1; i >= 0; i--) {
+		if (frq[s[i] - '0'] <= b) continue;
+		for (int j = '2'; j >= '0'; j--) {
+			if (s[i] == j) break;
+			if (frq[j - '0'] >= b) continue;
+			frq[s[i] - '0']--;
+			frq[j - '0']++;
+			s[i] = j;
+			break;
+		}
+	}
+	cout << s << '\n';
+	return 0;
+}
